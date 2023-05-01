@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Application Details</h1>
+    <p><strong>Applicant:</strong> {{ object.applicant }}</p>
+    <p><strong>Job Posting:</strong> {{ object.job_posting }}</p>
+    <p><strong>Status:</strong> {{ object.status }}</p>
+    <p><strong>Resume:</strong> {{ object.resume.url }}</p>
+{% endblock %}

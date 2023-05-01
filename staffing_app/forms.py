@@ -5,9 +5,8 @@ from .models import *
 class ApplicationForm(forms.ModelForm):
     class Meta:
         model = Application
-        fields = ('email', 'resume')
+        fields = ('resume',)
         widgets = {
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'resume': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
@@ -16,8 +15,3 @@ class ApplicationForm(forms.ModelForm):
         self.fields['resume'].label = 'Resume/CV'
         self.fields['email'].label = 'Email'
         self.fields['resume'].widget.attrs['rows'] = 5
-
-class ApplicantCreationForm(UserCreationForm):
-    class Meta:
-        model = Applicant
-        fields = ['name', 'email', 'password1', 'password2']

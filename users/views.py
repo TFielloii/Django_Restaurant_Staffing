@@ -17,12 +17,12 @@ def custom_login(request):
         form = UserLoginForm(request=request, data=request.POST)
         if form.is_valid():
             user = authenticate(
-                username=form.cleaned_data['username'],
+                email=form.cleaned_data['username'],
                 password=form.cleaned_data['password'],
             )
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Hello <b>{user.username}</b>! You have been logged in")
+                messages.success(request, f"Hello <b>{user.first_name}</b>! You have been logged in")
                 return redirect('homepage')
         else:
             for error in list(form.errors.values()):
@@ -50,7 +50,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, f"New account created: {user.username}")
+            messages.success(request, f"New account created: {user.email}")
             return redirect('job-listings')
         else:
             for error in list(form.errors.values()):
@@ -63,20 +63,19 @@ def register(request):
         context={"form":form}
         )
 
-def profile(request, username):
+def profile(request, email):
     if request.method == 'POST':
         user = request.user
         form = UserUpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             user_form = form.save()
             messages.success(request, f'{user_form}, Your profile has been updated!')
-            return redirect('profile', user_form.username)
+            return redirect('profile', user_form.email)
         for error in list(form.errors.values()):
             messages.error(request, error)
-    user = get_user_model().objects.filter(username=username).first()
+    user = get_user_model().objects.filter(email=email).first()
     if user:
         form = UserUpdateForm(instance=user)
-        #form.fields['description'].widget.attrs = {'rows': 1}
         return render(request, 'profile.html', context={'form': form})
     return redirect("homepage")
 
