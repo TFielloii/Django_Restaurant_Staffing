@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ object.title }}</h1>
+    <p>{{ object.loc }}</p>
+    <p>{{ object.descr }}</p>
+    <p>Requirements: {{ object.requirements }}</p>
+    <p>Salary: ${{ object.salary }}</p>
+
+    <form method="post" action="{% url 'apply_to_job' object.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Apply</button>
+    </form>
+{% endblock %}
