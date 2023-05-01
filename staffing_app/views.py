@@ -80,7 +80,7 @@ class ApplicationDetailView(DetailView):
     template_name = 'application/application_detail.html'
 class ApplicationUpdateView(UpdateView):
     model = Application
-    fields = ['job_posting','applicant','hiring_manager','email','resume']
+    fields = ['job_posting','applicant','hiring_manager','resume','status']
     template_name = 'application/application_update.html'
     success_url = reverse_lazy('application-list')
 class ApplicationDeleteView(DeleteView):
