@@ -5,9 +5,9 @@ from .forms import *
 
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
-    #add_form = CustomUserCreationForm
-    #form = CustomUserChangeForm
-    #model = CustomUser
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
     list_display = ('email','first_name','last_name','is_staff','is_active','is_hiring_manager','is_restaurant_administrator',)
     list_filter = ('email','first_name','last_name','is_staff','is_active','is_hiring_manager','is_restaurant_administrator',)
     fieldsets = (
@@ -28,5 +28,4 @@ class CustomUserAdmin(UserAdmin):
     )
     search_fields = ('email',)
     ordering = ('email',)
-
 admin.site.register(CustomUser, CustomUserAdmin)

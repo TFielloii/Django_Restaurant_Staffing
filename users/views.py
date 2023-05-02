@@ -17,8 +17,9 @@ def custom_login(request):
         form = UserLoginForm(request=request, data=request.POST)
         if form.is_valid():
             user = authenticate(
-                email=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
                 password=form.cleaned_data['password'],
+                backend='users.backends.EmailBackend'
             )
             if user is not None:
                 login(request, user)
@@ -51,7 +52,7 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, f"New account created: {user.email}")
-            return redirect('job-listings')
+            return redirect('jobposting-list')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -92,4 +93,4 @@ def password_change(request):
             for error in list(form.errors.values()):
                 messages.error(request, error)
     form = SetPasswordForm(user)
-    return render(request, 'password_reset_confirm.html', {'form': form})
+    return render(request, 'password_reset.html', {'form': form})
