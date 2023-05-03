@@ -7,11 +7,11 @@ from .forms import *
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
-    model = CustomUser
     list_display = ('email','first_name','last_name','is_staff','is_active','is_hiring_manager','is_restaurant_administrator',)
     list_filter = ('email','first_name','last_name','is_staff','is_active','is_hiring_manager','is_restaurant_administrator',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'location')}),
         ('Permissions', {
             'fields': ('is_staff', 'is_active', 'is_hiring_manager',
                        'is_restaurant_administrator', 'groups', 'user_permissions')}),
@@ -20,12 +20,18 @@ class CustomUserAdmin(UserAdmin):
         (None, {
             "classes": ("wide",),
             "fields": (
-                'email', 'password1', 'password2', 'is_staff',
-                'is_active','is_hiring_manager','is_restaurant_administrator',
-                'groups', 'user_permissions'
+                'email', 'first_name', 'last_name', 'password1', 'password2', 'is_staff',
+                'is_active', 'is_hiring_manager', 'is_restaurant_administrator',
+                'location', 'groups', 'user_permissions'
             )}
         ),
     )
     search_fields = ('email',)
     ordering = ('email',)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "location":
+            kwargs["queryset"] = Location.objects.all()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 admin.site.register(CustomUser, CustomUserAdmin)

@@ -17,7 +17,7 @@
                         {% if user.is_superuser %}
                             <a class="nav-item nav-link" href="{% url 'location-list' %}">Locations</a>
                         {% endif %}
-                        {% if user.hiringmanager %}
+                        {% if user.is_hiring_manager %}
                             <a class="nav-item nav-link" href="{% url 'application-list' %}">Applications</a>
                         {% endif %}
                     {% endif %}

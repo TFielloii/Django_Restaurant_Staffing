@@ -4,11 +4,9 @@ from users.models import CustomUser
 
 class Location(models.Model):
     name = models.CharField(max_length=50)
-    number = models.PositiveIntegerField(unique=True)
-    street_address = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=2)
-    phone = models.CharField(max_length=11)
     def __str__(self):
         return self.name
 

@@ -12,10 +12,10 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 class RestaurantAdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_authenticated and hasattr(self.request.user, 'restaurantadministrator')
+        return self.request.user.is_authenticated and hasattr(self.request.user, 'is_restaurant_administrator')
 class HiringManagerRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_authenticated and hasattr(self.request.user, 'hiringmanager')
+        return self.request.user.is_authenticated and hasattr(self.request.user, 'is_hiring_manager')
 
 # Create your views here.
 def homepage(request):
@@ -77,7 +77,7 @@ class ApplicationListView(HiringManagerRequiredMixin, ListView):
     context_object_name = 'applications'
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.filter(hiring_manager__location=self.request.user.hiringmanager.location)
+        qs = qs.filter(hiring_manager__location=self.request.user.is_hiring_manager.location)
         return qs
 class ApplicationCreateView(CreateView):
     model = Application
@@ -94,7 +94,7 @@ class ApplicationUpdateView(HiringManagerRequiredMixin, UpdateView):
     success_url = reverse_lazy('application-list')
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.filter(hiring_manager__location=self.request.user.hiringmanager.location)
+        qs = qs.filter(hiring_manager__location=self.request.user.is_hiring_manager.location)
         return qs
 class ApplicationDeleteView(HiringManagerRequiredMixin, DeleteView):
     model = Application
@@ -102,7 +102,7 @@ class ApplicationDeleteView(HiringManagerRequiredMixin, DeleteView):
     success_url = reverse_lazy('application-list')
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.filter(hiring_manager__location=self.request.user.hiringmanager.location)
+        qs = qs.filter(hiring_manager__location=self.request.user.is_hiring_manager.location)
         return qs
 
 

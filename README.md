@@ -14,17 +14,11 @@ bash bin/setup_env.sh
 
 This will automatically create and start the environment, as well as install any required modules from the requirements.txt file.
 
-### Create initialized environment
-This will create a test@test.test account and a starting location:
-```console
-bash bin/initialize_db.sh
-```
-
 ### Start the local server
 Once you have everything installed and ready, start the local server by entering the following command:
 ```console
 python manage.py runserver
-```
+``` 
 
 ## File Details
 
