@@ -1,15 +1,34 @@
 {% extends 'header.html' %}
 
 {% block content %}
-    <h1>{{ object.title }}</h1>
-    <p>{{ object.loc }}</p>
-    <p>{{ object.descr }}</p>
-    <p>Requirements: {{ object.requirements }}</p>
-    <p>Salary: ${{ object.salary }}</p>
+<div class="job-posting">
+    <h1 class="job-title">{{ object.title }}</h1>
+    <p class="job-location">Location: {{ object.location }}</p>
+    <p class="job-description">Details: {{ object.descr }}</p>
+    <p class="job-requirements">Requirements: {{ object.requirements }}</p>
+    <p class="job-salary">Salary: ${{ object.salary }}</p>
 
-    <form method="post" action="{% url 'apply_to_job' object.id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Apply</button>
-    </form>
+    {% if user.is_authenticated %}
+        {% if user.applicant %}
+            <form class="job-application-form" method="post" action="{% url 'apply_to_job' object.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="job-apply-button" type="submit">Apply</button>
+            </form>
+        {% elif user.is_restaurant_administrator %}
+            <div class="job-admin-actions">
+                <form class="job-edit-form" method="post" action="{% url 'jobposting_update' object.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="job-edit-button" type="submit">Edit</button>
+                </form>
+                <form class="job-delete-form" method="post" action="{% url 'jobposting_delete' object.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="job-delete-button" type="submit">Delete</button>
+                </form>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
 {% endblock %}

@@ -8,14 +8,15 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from .forms import ApplicationForm
 from .models import *
+from users.models import HiringManager, RestaurantAdministrator, Applicant
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 class RestaurantAdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_authenticated and hasattr(self.request.user, 'is_restaurant_administrator')
+        return self.request.user.is_authenticated and self.request.user.is_restaurant_administrator
 class HiringManagerRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_authenticated and hasattr(self.request.user, 'is_hiring_manager')
+        return self.request.user.is_authenticated and self.request.user.is_hiring_manager
 
 # Create your views here.
 def homepage(request):
@@ -30,21 +31,21 @@ class LocationListView(RestaurantAdminRequiredMixin, ListView):
     context_object_name = 'locations'
 class LocationCreateView(RestaurantAdminRequiredMixin, CreateView):
     model = Location
-    fields = ['name','number','street_address','city','state','phone']
+    fields = ['name','address','city','state']
     template_name = 'location/location_create.html'
-    success_url = reverse_lazy('location-list')
+    success_url = reverse_lazy('location_list')
 class LocationDetailView(RestaurantAdminRequiredMixin, DetailView):
     model = Location
     template_name = 'location/location_detail.html'
 class LocationUpdateView(RestaurantAdminRequiredMixin, UpdateView):
     model = Location
-    fields = ['name','number','street_address','city','state','phone']
+    fields = ['name','address','city','state']
     template_name = 'location/location_update.html'
-    success_url = reverse_lazy('location-list')
+    success_url = reverse_lazy('location_list')
 class LocationDeleteView(RestaurantAdminRequiredMixin, DeleteView):
     model = Location
     template_name = 'location/location_delete.html'
-    success_url = reverse_lazy('location-list')
+    success_url = reverse_lazy('location_list')
 
 # Views for Job Posting model
 class JobPostingListView(ListView):
@@ -53,57 +54,45 @@ class JobPostingListView(ListView):
     context_object_name = 'job_postings'
 class JobPostingCreateView(RestaurantAdminRequiredMixin, CreateView):
     model = JobPosting
-    fields = ['title','loc','descr','requirements','salary']
+    fields = ['title','location','descr','requirements','salary']
     template_name = 'jobposting/jobposting_create.html'
-    success_url = reverse_lazy('jobposting-list')
+    success_url = reverse_lazy('jobposting_list')
 class JobPostingDetailView(DetailView):
     model = JobPosting
     template_name = 'jobposting/jobposting_detail.html'
-    success_url = reverse_lazy('application-create')
+    success_url = reverse_lazy('application_create')
 class JobPostingUpdateView(RestaurantAdminRequiredMixin, UpdateView):
     model = JobPosting
-    fields = ['title','loc','descr','requirements','salary']
+    fields = ['title','location','descr','requirements','salary']
     template_name = 'jobposting/jobposting_update.html'
-    success_url = reverse_lazy('jobposting-list')
+    success_url = reverse_lazy('jobposting_list')
 class JobPostingDeleteView(RestaurantAdminRequiredMixin, DeleteView):
     model = JobPosting
     template_name = 'jobposting/jobposting_delete.html'
-    success_url = reverse_lazy('jobposting-list')
+    success_url = reverse_lazy('jobposting_list')
 
 # Views for Application model
 class ApplicationListView(HiringManagerRequiredMixin, ListView):
     model = Application
     template_name = 'application/application_list.html'
     context_object_name = 'applications'
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.filter(hiring_manager__location=self.request.user.is_hiring_manager.location)
-        return qs
 class ApplicationCreateView(CreateView):
     model = Application
     form_class = ApplicationForm
-    success_url = reverse_lazy('jobposting-list')
+    success_url = reverse_lazy('jobposting_list')
     template_name = 'application/application_create.html'
-class ApplicationDetailView(DetailView):
+class ApplicationDetailView(HiringManagerRequiredMixin, DetailView):
     model = Application
     template_name = 'application/application_detail.html'
 class ApplicationUpdateView(HiringManagerRequiredMixin, UpdateView):
     model = Application
     fields = ['job_posting','applicant','hiring_manager','resume','status']
     template_name = 'application/application_update.html'
-    success_url = reverse_lazy('application-list')
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.filter(hiring_manager__location=self.request.user.is_hiring_manager.location)
-        return qs
+    success_url = reverse_lazy('application_list')
 class ApplicationDeleteView(HiringManagerRequiredMixin, DeleteView):
     model = Application
     template_name = 'application/application_delete.html'
-    success_url = reverse_lazy('application-list')
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.filter(hiring_manager__location=self.request.user.is_hiring_manager.location)
-        return qs
+    success_url = reverse_lazy('application_list')
 
 
 # Modules for applicants to apply
@@ -117,9 +106,16 @@ def apply_to_job(request, job_id):
         if form.is_valid():
             application = form.save(commit=False)
             application.job_posting = job_posting
-            application.applicant = request.user.applicant
+            if request.user.applicant is None:
+                print(000000000000000)
+                applicant = Applicant.objects.create(user=request.user)
+            else:
+                print(11111111111111)
+                applicant = request.user.applicant
+            application.applicant = applicant
             application.save()
-            return redirect('job_postings')
+            messages.success(request, "Your resume has been submitted successfully. Please wait for an email.")
+            return redirect('jobposting_list')
 
     context = {
         'form': form,

@@ -4,10 +4,10 @@
   <h1>Locations</h1>
   <ul>
     {% for location in locations %}
-      <li><a href="{% url 'location-detail' location.id %}">{{ location.name }}</a></li>
+      <li><a href="{% url 'location_detail' location.id %}">{{ location.name }}</a></li>
     {% empty %}
       <li>No locations found.</li>
     {% endfor %}
   </ul>
-  <a href="{% url 'location-create' %}">Create a new location</a>
+  <a href="{% url 'location_create' %}">Create a new location</a>
 {% endblock %}

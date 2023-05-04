@@ -7,6 +7,6 @@
   <form method="post">
     {% csrf_token %}
     <input type="submit" class="btn btn-danger" value="Delete">
-    <a href="{% url 'location-list' %}" class="btn btn-secondary">Cancel</a>
+    <a href="{% url 'location_list' %}" class="btn btn-secondary">Cancel</a>
   </form>
 {% endblock %}

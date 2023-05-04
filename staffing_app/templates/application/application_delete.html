@@ -1,12 +1,12 @@
 {% extends 'header.html' %}
 
 {% block content %}
-  <h1>Delete Job Posting</h1>
+  <h1>Delete Application</h1>
   <p>Are you sure you want to delete "{{ object }}"?</p>
 
   <form method="post">
     {% csrf_token %}
     <input type="submit" value="Delete" class="btn btn-danger">
-    <a href="{% url 'application-detail' object.id %}" class="btn btn-secondary">Cancel</a>
+    <a href="{% url 'application_detail' object.id %}" class="btn btn-secondary">Cancel</a>
   </form>
 {% endblock %}

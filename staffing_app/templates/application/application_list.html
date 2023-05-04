@@ -9,18 +9,33 @@
           <th>Job Posting</th>
           <th>Date Applied</th>
           <th>Status</th>
-          <th>Action</th>
+          <th>Location</th>
+          <th>Attached Resume</th>
         </tr>
       </thead>
       <tbody>
         {% for application in object_list %}
-          <tr>
-            <td>{{ application.applicant }}</td>
-            <td>{{ application.job_posting }}</td>
-            <td>{{ application.date_applied }}</td>
-            <td>{{ application.status }}</td>
-            <td><a href="{% url 'application-detail' application.pk %}">View</a></td>
-          </tr>
+          {% if user.location == application.job_posting.location %}
+            <tr>
+              <td>{{ application.applicant.first_name }} {{ application.applicant.last_name }}</td>
+              <td><a href="{% url 'jobposting_detail' application.job_posting.id %}">{{ application.job_posting }}</a></td>
+              <td>{{ application.date_applied }}</td>
+              <td>
+                <form method="POST" action="{% url 'application_update' application.pk %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="update_status">
+                  <select name="status">
+                    <option value="PENDING" {% if application.status == 'PENDING' %}selected{% endif %}>Pending</option>
+                    <option value="APPROVED" {% if application.status == 'APPROVED' %}selected{% endif %}>Approved</option>
+                    <option value="REJECTED" {% if application.status == 'REJECTED' %}selected{% endif %}>Rejected</option>
+                  </select>
+                  <button type="submit">Update</button>
+                </form>
+              </td>
+              <td>{{ application.job_posting.location }}</td>
+              <td><a href="{% url 'application_detail' application.pk %}">View</a></td>
+            </tr>
+          {% endif %}
         {% empty %}
           <tr>
             <td colspan="5">No applications found.</td>
