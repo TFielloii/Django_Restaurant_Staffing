@@ -17,9 +17,6 @@ class CustomUserManager(BaseUserManager):
         elif is_restaurant_administrator:
             restaurant_administrator = RestaurantAdministrator.objects.create(user=user, location=location)
             restaurant_administrator.save()
-        else:
-            applicant = Applicant.objects.create(user=user)
-            applicant.save()
         return user
 
     def create_superuser(self, email, password, **extra_fields):

@@ -21,7 +21,7 @@ class JobPosting(models.Model):
         return self.title
     
 class Application(models.Model):
-    from users.models import Applicant, HiringManager
+    from users.models import Applicant
     PENDING = 'pending'
     APPROVED = 'approved'
     REJECTED = 'rejected'

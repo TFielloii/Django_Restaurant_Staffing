@@ -6,6 +6,7 @@
       <thead>
         <tr>
           <th>Applicant</th>
+          <th>Email</th>
           <th>Job Posting</th>
           <th>Date Applied</th>
           <th>Status</th>
@@ -17,7 +18,8 @@
         {% for application in object_list %}
           {% if user.location == application.job_posting.location %}
             <tr>
-              <td>{{ application.applicant.first_name }} {{ application.applicant.last_name }}</td>
+              <td>{{ application.applicant.user.first_name }} {{ application.applicant.user.last_name }}</td>
+              <td>{{ application.applicant.user.email }}</td>
               <td><a href="{% url 'jobposting_detail' application.job_posting.id %}">{{ application.job_posting }}</a></td>
               <td>{{ application.date_applied }}</td>
               <td>

@@ -5,7 +5,9 @@
 
   <div class="row display-flex justify-content-start">
     {% for job_posting in job_postings %}
-      <li style="margin-right: 5%;margin-bottom: 1%;"><a href="{% url 'jobposting_detail' job_posting.pk %}">{{ job_posting.title }}</a></li>
+      {% if user.location == job_posting.location %}
+        <li style="margin-right: 5%;margin-bottom: 1%;"><a href="{% url 'jobposting_detail' job_posting.pk %}">{{ job_posting.title }}</a></li>
+      {% endif %}
     {% empty %}
       <li>No job postings found.</li>
     {% endfor %}

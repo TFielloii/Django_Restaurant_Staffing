@@ -29,6 +29,4 @@ admin.save()
 JobPosting.objects.create(title='Chef', location=location2, descr='Chef stuff.', requirements='Doing Chef stuff.', salary='12.50')
 JobPosting.objects.create(title='IT Goblin', location=location1, descr='IT stuff.', requirements='Doing IT stuff.', salary='1.50')
 
-CustomUser.objects.create_superuser(email='tfielloii@yahoo.com',first_name='Thomas',last_name='Fiello',password=make_password('Copious20'))
-
 EOF

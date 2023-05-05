@@ -107,10 +107,8 @@ def apply_to_job(request, job_id):
             application = form.save(commit=False)
             application.job_posting = job_posting
             if request.user.applicant is None:
-                print(000000000000000)
                 applicant = Applicant.objects.create(user=request.user)
             else:
-                print(11111111111111)
                 applicant = request.user.applicant
             application.applicant = applicant
             application.save()
