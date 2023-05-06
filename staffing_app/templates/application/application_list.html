@@ -1,4 +1,7 @@
 {% extends 'header.html' %}
+
+{% load crispy_forms_tags %}
+
 {% block content %}
   <h1>Current Applications</h1>
   <div class="container-fluid">
@@ -23,7 +26,7 @@
               <td><a href="{% url 'jobposting_detail' application.job_posting.id %}">{{ application.job_posting }}</a></td>
               <td>{{ application.date_applied }}</td>
               <td>
-                <form method="POST" action="{% url 'application_update' application.pk %}">
+                <form method="POST" action="{% url 'application_email' application.pk %}">
                   {% csrf_token %}
                   <input type="hidden" name="action" value="update_status">
                   <select name="status">
@@ -31,7 +34,7 @@
                     <option value="APPROVED" {% if application.status == 'APPROVED' %}selected{% endif %}>Approved</option>
                     <option value="REJECTED" {% if application.status == 'REJECTED' %}selected{% endif %}>Rejected</option>
                   </select>
-                  <button type="submit">Update</button>
+                  <button class="submit" type="submit">Update</button>
                 </form>
               </td>
               <td>{{ application.job_posting.location }}</td>

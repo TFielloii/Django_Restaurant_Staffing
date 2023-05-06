@@ -12,5 +12,4 @@ class ApplicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['resume'].label = 'Resume/CV'
-        #self.fields['email'].label = 'Email'
         self.fields['resume'].widget.attrs['rows'] = 5

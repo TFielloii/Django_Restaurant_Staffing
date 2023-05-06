@@ -36,6 +36,18 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     ]
 
+# Email definition
+
+with open('django_gmail_pass.txt', 'r') as f:
+    gmail_password = f.readline().strip()
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'tfielloii@gmail.com'
+EMAIL_HOST_PASSWORD = gmail_password
+
 # Application definition
 
 INSTALLED_APPS = [
