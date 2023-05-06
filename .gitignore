@@ -1,2 +1,3 @@
 /venv/
 *.pyc
+django_gmail_pass.txt

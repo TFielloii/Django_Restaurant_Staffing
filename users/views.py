@@ -1,16 +1,31 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 from django.contrib import messages
-from django.http import HttpResponse
-from django.urls import reverse_lazy
 from .models import *
 from .forms import *
 from .decorators import user_not_authenticated
+from rest_framework import viewsets
+from .serializers import ApplicantSerializer, HiringManagerSerializer, RestaurantAdministratorSerializer, CustomUserSerializer
 
-# Create your views here.
+# API views start here.
+class ApplicantViewSet(viewsets.ModelViewSet):
+    queryset = Applicant.objects.all()
+    serializer_class = ApplicantSerializer
+
+class HiringManagerViewSet(viewsets.ModelViewSet):
+    queryset = HiringManager.objects.all()
+    serializer_class = HiringManagerSerializer
+
+class RestaurantAdministratorViewSet(viewsets.ModelViewSet):
+    queryset = RestaurantAdministrator.objects.all()
+    serializer_class = RestaurantAdministratorSerializer
+
+class CustomUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+
+# Model views start here.
 @user_not_authenticated
 def custom_login(request):
     if request.method == 'POST':

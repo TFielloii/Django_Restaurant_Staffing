@@ -4,22 +4,38 @@ from django.views.generic import CreateView, UpdateView, ListView, DetailView, D
 from django.contrib import messages
 from django.http import HttpResponseBadRequest
 from django.urls import reverse_lazy
-from .forms import ApplicationForm
-from .models import *
 from users.models import Applicant
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
+from rest_framework import viewsets
+from rest_framework import generics
+from .serializers import LocationSerializer, JobPostingSerializer, ApplicationSerializer
+from .forms import ApplicationForm
+from .models import Location, JobPosting, Application
 
+# API views start here
+class LocationViewSet(viewsets.ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+
+class JobPostingViewSet(viewsets.ModelViewSet):
+    queryset = JobPosting.objects.all()
+    serializer_class = JobPostingSerializer
+
+class ApplicationViewSet(viewsets.ModelViewSet):
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
+
+# Model views start here
 class RestaurantAdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.is_restaurant_administrator
 class HiringManagerRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.is_hiring_manager
-
-# Create your views here.
+    
 def homepage(request):
     return render(request=request,
                   template_name='home.html',

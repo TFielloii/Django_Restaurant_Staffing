@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from .views import *
 
 urlpatterns = [
@@ -18,7 +17,7 @@ urlpatterns = [
 
     path('applications/', ApplicationListView.as_view(), name='application_list'),
     path('applications/create/', ApplicationCreateView.as_view(), name='application_create'),
-    path('applications/<int:job_id>/', apply_to_job, name='apply_to_job'),
+    path('applications/<int:job_id>/apply', apply_to_job, name='apply_to_job'),
     path('applications/<int:app_id>/email/', application_email, name='application_email'),
     path('applications/<int:pk>/details/', ApplicationDetailView.as_view(), name='application_detail'),
     path('applications/<int:pk>/update/', ApplicationUpdateView.as_view(), name='application_update'),

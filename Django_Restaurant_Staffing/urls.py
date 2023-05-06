@@ -18,11 +18,26 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path, include
+from rest_framework import routers
+from staffing_app.views import LocationViewSet, JobPostingViewSet, ApplicationViewSet
+from users.views import ApplicantViewSet, HiringManagerViewSet, RestaurantAdministratorViewSet, CustomUserViewSet
+
+router = routers.DefaultRouter()
+router.register(r'locations', LocationViewSet)
+router.register(r'job_postings', JobPostingViewSet)
+router.register(r'applications', ApplicationViewSet)
+router.register(r'applicants', ApplicantViewSet)
+router.register(r'hiring_managers', HiringManagerViewSet)
+router.register(r'restaurant_administrators', RestaurantAdministratorViewSet)
+router.register(r'users', CustomUserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
+    path('api/', include(router.urls)),
     path('', include('staffing_app.urls')),
     path('', include('users.urls')),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
