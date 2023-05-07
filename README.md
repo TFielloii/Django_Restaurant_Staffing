@@ -22,19 +22,27 @@ bash bin/initialize_db.sh
 ```
 
 It creates the following locations:
-Location 1  -   Reynholm Industries
-Location 2  -   Strickland Propane
+| Locations  |         Name        |
+|------------|---------------------|
+| Location 1 | Strickland Propane  |
+| Location 2 | Reynholm Industries |
+
 
 The following users:
-Base user                       test@test.test      password1
-Hiring Manager (location 1)     man@man.man         password1
-Hiring Manager (location 2)     man2@man.man        password1
-Rest Admin (location 1)         admin@admin.admin   password1
-Rest Admin (location 2)         admin2@admin.admin  password1
+| User Type  | Locations  |    Email    |  Password  |
+|------------|------------|-------------|------------|
+|Base User| NA |test@test.test|password1|
+|Hiring Manager| Location 1 | man@man.man |password1|
+|Hiring Manager| Location 2 | man2@man.man |password1|
+|Rest Admin| Location 1 | admin@admin.admin |password1|
+|Rest Admin| Location 2 | admin2@admin.admin |password1|
+
 
 The following job postings:
-Jr Grill Associate      Location 1
-IT Goblin               Location 2
+| Job Title  |      Locations |
+|------------|----------------|
+|Jr Grill Associate| Location 1 |
+|IT Goblin| Location 2  |
 
 If you want to create more restaurant administrators or hiring managers you must create a super user with the following command:
 ```console
@@ -46,6 +54,9 @@ Once you have everything installed and ready, start the local server by entering
 ```console
 python manage.py runserver
 ```
+
+### Testing email server
+Inside the project folder Django_Restaurant_Staffing/settings.py file you can find the email settings. The 
 
 ## File Details
 
