@@ -1,9 +1,23 @@
 {% extends 'header.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
     <h1>{{ object.name }}</h1>
     <p>{{ object.number }}</p>
     <p>{{ object.street_address }}</p>
     <p>{{ object.city }}, {{ object.state }}</p>
     <p>{{ object.phone }}</p>
+    <div class="loc-admin-actions">
+        <form class="loc-edit-form" method="post" action="{% url 'location_update' object.id %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="loc-edit-button" type="submit">Edit</button>
+        </form>
+        <form class="loc-delete-form" method="post" action="{% url 'location_delete' object.id %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="loc-delete-button" type="submit">Delete</button>
+        </form>
+    </div>
 {% endblock %}

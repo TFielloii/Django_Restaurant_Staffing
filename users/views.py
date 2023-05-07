@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from rest_framework import viewsets
+
 from .models import *
 from .forms import *
 from .decorators import user_not_authenticated
-from rest_framework import viewsets
-from .serializers import ApplicantSerializer, HiringManagerSerializer, RestaurantAdministratorSerializer, CustomUserSerializer
+from .serializers import (ApplicantSerializer, HiringManagerSerializer,
+                          RestaurantAdministratorSerializer, CustomUserSerializer)
 
 # API views start here.
 class ApplicantViewSet(viewsets.ModelViewSet):
@@ -25,7 +27,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
 
-# Model views start here.
+# View functions start here.
 @user_not_authenticated
 def custom_login(request):
     if request.method == 'POST':
@@ -37,18 +39,19 @@ def custom_login(request):
             )
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Hello <b>{user.first_name}</b>! You have been logged in")
+                messages.success(request, f"Hello <b>{user.first_name}</b>! You have been logged in.")
                 return redirect('homepage')
         else:
-            for error in list(form.errors.values()):
+            for error in form.errors.values():
                 messages.error(request, error) 
     form = UserLoginForm() 
     return render(
         request=request,
         template_name="login.html", 
         context={'form': form}
-        )
+    )
 
+# Custom Logout function for navbar.
 @login_required
 def custom_logout(request):
     logout(request)
@@ -57,9 +60,9 @@ def custom_logout(request):
 
 @user_not_authenticated
 def register(request):
-    # Logged in user can't register a new account
+    # Prevents authenticated user from creating additional accounts.
     if request.user.is_authenticated:
-        return redirect("/")
+        return redirect("homepage")
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -68,7 +71,7 @@ def register(request):
             messages.success(request, f"New account created: {user.email}")
             return redirect('job-listings')
         else:
-            for error in list(form.errors.values()):
+            for error in form.errors.values():
                 messages.error(request, error)
     else:
         form = UserRegistrationForm()
@@ -86,7 +89,7 @@ def profile(request, email):
             user_form = form.save()
             messages.success(request, f'{user_form}, Your profile has been updated!')
             return redirect('profile', user_form.email)
-        for error in list(form.errors.values()):
+        for error in form.errors.values():
             messages.error(request, error)
     user = get_user_model().objects.filter(email=email).first()
     if user:

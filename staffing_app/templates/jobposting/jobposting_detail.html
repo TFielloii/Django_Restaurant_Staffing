@@ -3,34 +3,46 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="job-posting">
-    <h1 class="job-title">{{ object.title }}</h1>
-    <p class="job-location">Location: {{ object.location }}</p>
-    <p class="job-description">Details: {{ object.descr }}</p>
-    <p class="job-requirements">Requirements: {{ object.requirements }}</p>
-    <p class="job-salary">Salary: ${{ object.salary }}</p>
+{% if user.is_authenticated %}
+    {% if not user.is_hiring_manager %}
+        <div class="job-posting">
+            <h1 class="job-title">{{ object.title }}</h1>
+            <p class="job-location">Location: {{ object.location }}</p>
+            <p class="job-description">Details: {{ object.description }}</p>
+            <p class="job-requirements">Requirements: {{ object.requirements }}</p>
+            <p class="job-salary">Salary: ${{ object.salary }}</p>
 
-    {% if user.is_authenticated %}
-        {% if not user.is_hiring_manager or user.is_restaurant_administrator %}
-            <form class="job-application-form" method="post" action="{% url 'apply_to_job' object.id %}">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button class="job-apply-button" type="submit">Apply</button>
-            </form>
-        {% elif user.is_restaurant_administrator %}
-            <div class="job-admin-actions">
-                <form class="job-edit-form" method="post" action="{% url 'jobposting_update' object.id %}">
+            {% if not user.is_restaurant_administrator %}
+                <form class="job-application-form" method="post" action="{% url 'apply_to_job' object.id %}">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <button class="job-edit-button" type="submit">Edit</button>
+                    <button class="job-apply-button" type="submit">Apply</button>
                 </form>
-                <form class="job-delete-form" method="post" action="{% url 'jobposting_delete' object.id %}">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <button class="job-delete-button" type="submit">Delete</button>
-                </form>
-            </div>
-        {% endif %}
-    {% endif %}
+            {% elif user.is_restaurant_administrator %}
+                <div class="job-admin-actions">
+                    <form class="job-edit-form" method="post" action="{% url 'jobposting_update' object.id %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button class="job-edit-button" type="submit">Edit</button>
+                    </form>
+                    <form class="job-delete-form" method="post" action="{% url 'jobposting_delete' object.id %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button class="job-delete-button" type="submit">Delete</button>
+                    </form>
+                </div>
+            {% endif %}
+
+    {% elif user.is_hiring_manager and user.location == object.location %}
+        <div class="job-posting">
+            <h1 class="job-title">{{ object.title }}</h1>
+            <p class="job-location">Location: {{ object.location }}</p>
+            <p class="job-description">Details: {{ object.description }}</p>
+            <p class="job-requirements">Requirements: {{ object.requirements }}</p>
+            <p class="job-salary">Salary: ${{ object.salary }}</p>
+    {% else %}
+        <li>You do not have permission to view this.</li>
+    {% endif %}    
+{% endif %}
 </div>
 {% endblock %}

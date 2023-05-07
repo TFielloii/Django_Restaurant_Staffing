@@ -1,5 +1,7 @@
 {% extends "header.html" %}
+
 {% load crispy_forms_tags %}
+
 {% block content %}
     <div class="content-section">
         <form method="POST">
@@ -17,9 +19,6 @@
             <small class="text-muted">
                 Need An Account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
             </small><br>
-            <small class="text-muted">
-                <a href="/">Forgot password?</a>
-            </small>
         </div>
     </div>
 {% endblock %}

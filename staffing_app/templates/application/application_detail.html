@@ -1,10 +1,21 @@
 {% extends 'header.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <h1>Application Details</h1>
-    <p><strong>Applicant:</strong> {{ object.applicant.user.first_name }} {{ application.applicant.user.last_name }}</p>
-    <p><strong>Email:</strong> {{ object.applicant.user.email }}</p>
-    <p><strong>Job Posting:</strong> {{ object.job_posting }}</p>
-    <p><strong>Status:</strong> {{ object.status }}</p>
-    <p><strong>Resume:</strong> {{ object.resume }}</p>
+{% if user.location == object.location %}
+        <h1>Application Details</h1>
+        <p><strong>Applicant:</strong> {{ object.applicant.user.first_name }} {{ application.applicant.user.last_name }}</p>
+        <p><strong>Email:</strong> {{ object.applicant.user.email }}</p>
+        <p><strong>Job Posting:</strong> {{ object.job_posting }}</p>
+        <p><strong>Status:</strong> {{ object.status }}</p>
+        <p><strong>Resume:</strong> {{ object.resume }}</p>
+        <form class="application-list" action="{% url 'application_list' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="return" type="submit">Return</button>
+        </form>
+{% else %}
+    <li>You do not have permission to view this.</li>
+{% endif %}
 {% endblock %}

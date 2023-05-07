@@ -15,7 +15,7 @@ from .serializers import LocationSerializer, JobPostingSerializer, ApplicationSe
 from .forms import ApplicationForm
 from .models import Location, JobPosting, Application
 
-# API views start here
+# API CRUD views.
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
@@ -28,20 +28,24 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
 
-# Model views start here
+# Mixins for restricting specific site access.
+class AuthenticationRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated
 class RestaurantAdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.is_restaurant_administrator
 class HiringManagerRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.is_hiring_manager
-    
+
+# Basic homepage view.
 def homepage(request):
     return render(request=request,
                   template_name='home.html',
                   )
 
-# Views for locations
+# Views for locations.
 class LocationListView(RestaurantAdminRequiredMixin, ListView):
     model = Location
     template_name = 'location/location_list.html'
@@ -64,23 +68,23 @@ class LocationDeleteView(RestaurantAdminRequiredMixin, DeleteView):
     template_name = 'location/location_delete.html'
     success_url = reverse_lazy('location_list')
 
-# Views for Job Posting model
-class JobPostingListView(ListView):
+# Views for Job Posting model.
+class JobPostingListView(AuthenticationRequiredMixin, ListView):
     model = JobPosting
     template_name = 'jobposting/jobposting_list.html'
     context_object_name = 'job_postings'
 class JobPostingCreateView(RestaurantAdminRequiredMixin, CreateView):
     model = JobPosting
-    fields = ['title','location','descr','requirements','salary']
+    fields = ['title','location','description','requirements','salary']
     template_name = 'jobposting/jobposting_create.html'
     success_url = reverse_lazy('jobposting_list')
-class JobPostingDetailView(DetailView):
+class JobPostingDetailView(AuthenticationRequiredMixin, DetailView):
     model = JobPosting
     template_name = 'jobposting/jobposting_detail.html'
     success_url = reverse_lazy('application_create')
 class JobPostingUpdateView(RestaurantAdminRequiredMixin, UpdateView):
     model = JobPosting
-    fields = ['title','location','descr','requirements','salary']
+    fields = ['title','location','description','requirements','salary']
     template_name = 'jobposting/jobposting_update.html'
     success_url = reverse_lazy('jobposting_list')
 class JobPostingDeleteView(RestaurantAdminRequiredMixin, DeleteView):
@@ -88,12 +92,12 @@ class JobPostingDeleteView(RestaurantAdminRequiredMixin, DeleteView):
     template_name = 'jobposting/jobposting_delete.html'
     success_url = reverse_lazy('jobposting_list')
 
-# Views for Application model
+# Views for Application model.
 class ApplicationListView(HiringManagerRequiredMixin, ListView):
     model = Application
     template_name = 'application/application_list.html'
     context_object_name = 'applications'
-class ApplicationCreateView(CreateView):
+class ApplicationCreateView(AuthenticationRequiredMixin, CreateView):
     model = Application
     form_class = ApplicationForm
     success_url = reverse_lazy('jobposting_list')
@@ -101,12 +105,6 @@ class ApplicationCreateView(CreateView):
 class ApplicationDetailView(HiringManagerRequiredMixin, DetailView):
     model = Application
     template_name = 'application/application_detail.html'
-    '''
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['resume'] = self.get_object().resume
-        return context
-    '''
 class ApplicationUpdateView(HiringManagerRequiredMixin, UpdateView):
     model = Application
     fields = ['job_posting','applicant','resume','status']
@@ -134,7 +132,7 @@ def apply_to_job(request, job_id):
                 applicant = Applicant.objects.create(user=request.user)
             application.applicant = applicant
             application.save()
-            messages.success(request, "Your resume has been submitted successfully. Please wait for an email.")
+            messages.success(request, "Your resume has been submitted successfully. Please wait for an email from our hiring manager.")
             return redirect('jobposting_list')
     context = {
         'form': form,
@@ -146,28 +144,35 @@ def apply_to_job(request, job_id):
 @require_POST
 def application_email(request, app_id):
     application = get_object_or_404(Application, id=app_id)
-    print(application.status)
+    current_status = application.status
 
     if request.POST.get('action') == 'update_status':
-        application.status = request.POST.get('status')
-        application.save()
+        new_status = request.POST.get('status')
+        if new_status != current_status:
+            application.status = new_status
+            application.save()
 
-        if application.status == 'APPROVED':
-            subject = 'Congratulations'
-            message = 'Dear {} {},\n\nYou have been accepted for the position of {}, at {}. Please report to work in 3 days and if you have any questions please reach out.\n\nWelcome aboard,\n{} {}'.format(
-                application.applicant.user.first_name, application.applicant.user.last_name, application.job_posting.title,
-                application.job_posting.location, request.user.first_name, request.user.last_name)
-        elif application.status == 'REJECTED':
-            subject = "We're sorry."
-            message = 'Dear {} {},\n\nUnfortunately, you have not been accepted for the position of {}, at {}.\n\nGood luck in your future endeavors,\n{} {}'.format(
-                application.applicant.user.first_name, application.applicant.user.last_name, application.job_posting.title,
-                application.job_posting.location, request.user.first_name, request.user.last_name)
+            if application.status == 'APPROVED':
+                subject = 'Congratulations'
+                message = 'Dear {} {},\n\nYou have been accepted for the position of {}, at {}. Please report to work in 3 days and if you have any questions please reach out.\n\nWelcome aboard,\n{} {}'.format(
+                    application.applicant.user.first_name, application.applicant.user.last_name, application.job_posting.title,
+                    application.job_posting.location, request.user.first_name, request.user.last_name)
+            elif application.status == 'REJECTED':
+                subject = "We're sorry."
+                message = 'Dear {} {},\n\nUnfortunately, you have not been accepted for the position of {}, at {}.\n\nGood luck in your future endeavors,\n{} {}'.format(
+                    application.applicant.user.first_name, application.applicant.user.last_name, application.job_posting.title,
+                    application.job_posting.location, request.user.first_name, request.user.last_name)
+            else:
+                subject = "We've changed our minds."
+                message = 'Dear {} {},\n\nWe decided to change our minds about considering you for the position of {}, at {}.\n\nYour move,\n{} {}'.format(
+                    application.applicant.user.first_name, application.applicant.user.last_name, application.job_posting.title,
+                    application.job_posting.location, request.user.first_name, request.user.last_name)
+
+            email_from = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [application.applicant.user.email]
+            send_mail(subject, message, email_from, recipient_list)
+            messages.success(request, "The updated status has been emailed to the applicant.")
         else:
-            return HttpResponseBadRequest()
-
-        email_from = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [application.applicant.user.email]
-        send_mail(subject, message, email_from, recipient_list)
-        messages.success(request, "The updated status has been emailed to the applicant.")
-
+            messages.warning(request, "The status has not been changed.")
+    
     return redirect('application_list')

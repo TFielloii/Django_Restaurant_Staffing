@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("title", models.CharField(max_length=200)),
-                ("descr", models.TextField()),
+                ('description', models.TextField()),
                 ("requirements", models.TextField()),
                 ("salary", models.DecimalField(decimal_places=2, max_digits=12)),
                 (

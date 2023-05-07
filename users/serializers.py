@@ -1,6 +1,8 @@
 from rest_framework import serializers
+
 from .models import Applicant, HiringManager, RestaurantAdministrator, CustomUser
 
+# Serializers for the Users models.
 class ApplicantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applicant
