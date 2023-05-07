@@ -58,6 +58,10 @@ python manage.py runserver
 ### Testing email server
 Inside the project folder Django_Restaurant_Staffing/settings.py file you can find the email settings. The 
 
+### Create initialized environment
+To access the API directory. Just add /api/ to the end of the URL's homepage. For example:
+If your website is the local server, then the APIs would be located at http://127.0.0.1:8000/api/
+
 ## File Details
 
 ### Django_Restaurant_Staffing

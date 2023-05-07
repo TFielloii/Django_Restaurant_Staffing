@@ -14,19 +14,19 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: This should be removed before using as a real application!
+# New secret keys can be created by following this guide: https://www.educative.io/answers/how-to-generate-a-django-secretkey
 SECRET_KEY = 'django-insecure-^=%iev^4fgaufc5lvy9lx63x02z0a2fyi5jhg9=&i&it02w^t#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 LOGIN_URL = '/login'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
