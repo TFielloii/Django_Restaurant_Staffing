@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^=%iev^4fgaufc5lvy9lx63x02z0a2fyi5jhg9=&i&it02w^t#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 LOGIN_URL = '/login'
 
@@ -44,7 +45,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'tfielloii@gmail.com'
+EMAIL_HOST_USER = 'tfielloii@gmail.com' # Update this with the desired gmail account
 EMAIL_HOST_PASSWORD = gmail_password
 
 # Application definition
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     'staffing_app',
     'users',
     'rest_framework',
+    'fontawesomefree',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -143,7 +145,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+  os.path.join(BASE_DIR, 'static/'),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

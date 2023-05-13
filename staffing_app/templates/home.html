@@ -1,17 +1,12 @@
 {% extends "header.html" %}
+{% load static %}
 
 {% block content %}
-<style>
-    body {
-      background-image: url('/static/images/staff.jpeg');
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: 90% 75%;
-      background-position: bottom;
-      background-position-y: 90%;
-    }
-</style>
   <h1>Welcome to our Restaurant Staffing Website</h1>
   <p>Here you can find and apply for job postings at our restaurant locations.</p>
   <p>Login and use the links above to get started!</p>
+  <div class="image-container">
+    <img src="{% static 'images/staff.jpeg' %}" width="100%">
+    <!-- image taken from https://www.pexels.com/photo/two-men-preparing-food-3217156/ -->
+  </div>
 {% endblock %}

@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, DeleteView
 from django.contrib import messages
-from django.http import HttpResponseBadRequest
 from django.urls import reverse_lazy
 from users.models import Applicant
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -10,9 +9,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 from rest_framework import viewsets
-from rest_framework import generics
 from .serializers import LocationSerializer, JobPostingSerializer, ApplicationSerializer
-from .forms import ApplicationForm
+from .forms import ApplicationForm, JobPostingForm
 from .models import Location, JobPosting, Application
 
 # API CRUD views.
@@ -75,9 +73,13 @@ class JobPostingListView(AuthenticationRequiredMixin, ListView):
     context_object_name = 'job_postings'
 class JobPostingCreateView(RestaurantAdminRequiredMixin, CreateView):
     model = JobPosting
-    fields = ['title','location','description','requirements','salary']
+    form_class = JobPostingForm
     template_name = 'jobposting/jobposting_create.html'
     success_url = reverse_lazy('jobposting_list')
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['location'] = self.request.user.location
+        return kwargs
 class JobPostingDetailView(AuthenticationRequiredMixin, DetailView):
     model = JobPosting
     template_name = 'jobposting/jobposting_detail.html'

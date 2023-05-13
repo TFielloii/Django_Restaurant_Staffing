@@ -5,30 +5,27 @@ This is the repository of Thomas Fiello's internship project for ExpandShare (Su
 ## Getting Started
 
 ### Setting up environment
-From the root directory, I recommend creating an environment to install the appropriate Python packages, such as virtualenv (venv) as it is already setup for it.
+From the main directory, I recommend creating an environment for installing the appropriate Python packages.
 
-Inside the repository is a bin folder with a setup_env.sh file which contains all necessary packages to execute the code. The environment including the packages can be created and installed by executing the following command: 
+Inside the bin folder is a setup_env.sh file which will automatically create and start the venv environment, as well as pip install any required modules from the requirements.txt file. Run it by executing the following command: 
 ```console
 bash bin/setup_env.sh
 . /venv/Scripts/Activate
 ``` 
 
-This will automatically create and start the environment, as well as install any required modules from the requirements.txt file.
-
 ### Create initialized environment
-This will create a sample for every user type, sample locations, and a job posting, described below:
+Once the virtual environment is established, you can skip to creating the different locations, users, jobs, and superusers yourself, or, in the same bin folder as the previous step, there is an initialize_db.sh file which is setup to create the samples listed below. To ensure that there are no conflicting database issues, when this code is executed, it will also automatically remove the current db.sqlite3 file as well as any migrations currently found in the two apps. To run the file, execute the following command:
 ```console
 bash bin/initialize_db.sh
 ```
 
-It creates the following locations:
+Sample locations:
 | Locations  |         Name        |
 |------------|---------------------|
 | Location 1 | Strickland Propane  |
 | Location 2 | Reynholm Industries |
 
-
-The following users:
+Sample users:
 | User Type  | Locations  |    Email    |  Password  |
 |------------|------------|-------------|------------|
 |Base User| NA |test@test.test|password1|
@@ -37,28 +34,27 @@ The following users:
 |Rest Admin| Location 1 | admin@admin.admin |password1|
 |Rest Admin| Location 2 | admin2@admin.admin |password1|
 
-
-The following job postings:
+Sample job postings:
 | Job Title  |      Locations |
 |------------|----------------|
 |Jr Grill Associate| Location 1 |
 |IT Goblin| Location 2  |
 
-If you want to create more restaurant administrators or hiring managers you must create a super user with the following command:
+If you want to create more restaurant administrators or hiring managers you must create a superuser with the following command:
 ```console
 python manage.py createsuperuser
 ```
 
-### Start the local server
-Once you have everything installed and ready, start the local server by entering the following command:
+## Start the local server
+You are now ready to start the local server with the following command:
 ```console
 python manage.py runserver
 ```
 
 ### Testing email server
-Inside the project folder Django_Restaurant_Staffing/settings.py file you can find the email settings. The 
+Inside the project folder ./Django_Restaurant_Staffing/settings.py file you can find the email settings. Change the EMAIL_HOST_USER to whatever your desired email address is (currently setup for gmail) and then you can create a file in the main directory called 'django_gmail_pass.txt' to store the Google generated APP password.
 
-### Create initialized environment
+### Accessing the API directory
 To access the API directory. Just add /api/ to the end of the URL's homepage. For example:
 If your website is the local server, then the APIs would be located at http://127.0.0.1:8000/api/
 
@@ -68,10 +64,10 @@ If your website is the local server, then the APIs would be located at http://12
 This is the main project folder.
 
 ### staffing_app
-This holds all of the models, templates, views, urls, etc for the locations, job postings, and applications.
+This app holds all of the models, templates, views, urls, etc for the locations, job postings, and applications.
 
 ### users
-This holds all of the models, templates, views, urls, etc for any of the user personas and authentication information.
+This app holds all of the models, templates, views, urls, etc for any of the user personas and authentication.
 
 ## Disclaimer
-The code and these instructions were tested using Python 3.8.8 and Windows 10. Depending on your operating system modifications might be needed. Feel free to contact us in case any problems occure or questions arise.
+The code was all tested using Django 4.2.1, Python 3.8.8, and a virtual environment inside Windows 10. Depending on your operating system, modifications may be needed. Feel free to contact me with any questions, recommendations, or concerns at tfielloii@yahoo.com

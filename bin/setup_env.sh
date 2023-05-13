@@ -7,11 +7,6 @@ rm -rf venv
 python -m venv venv
 
 # Activates the virtual environment and installs requirements
-activate() {
-    . venv/Scripts/activate
-
-    echo "Installing requirements to virtual environment."
-    pip install -r requirements.txt
-}
-
-activate
+echo "Installing requirements to virtual environment."
+source venv/Scripts/activate
+pip install -r requirements.txt
