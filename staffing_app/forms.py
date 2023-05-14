@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import *
+from .models import Application, JobPosting, Location, Restaurant
 
 class ApplicationForm(forms.ModelForm):
     class Meta:
@@ -19,6 +19,15 @@ class JobPostingForm(forms.ModelForm):
         model = JobPosting
         fields = ['title', 'location', 'description', 'requirements', 'salary']
     def __init__(self, *args, **kwargs):
-        admin_loc = kwargs.pop('location')
+        admin_loc = kwargs.pop('restaurant')
         super().__init__(*args, **kwargs)
-        self.fields['location'].queryset = Location.objects.filter(id=admin_loc.id)
+        self.fields['location'].queryset = Location.objects.filter(restaurant=admin_loc)
+
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = ['address','city','state','restaurant']
+    def __init__(self, *args, **kwargs):
+        admin_loc = kwargs.pop('restaurant')
+        super().__init__(*args, **kwargs)
+        self.fields['restaurant'].queryset = Restaurant.objects.filter(name=admin_loc)

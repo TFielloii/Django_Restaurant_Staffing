@@ -9,11 +9,15 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 from rest_framework import viewsets
-from .serializers import LocationSerializer, JobPostingSerializer, ApplicationSerializer
-from .forms import ApplicationForm, JobPostingForm
-from .models import Location, JobPosting, Application
+from .serializers import RestaurantSerializer, LocationSerializer, JobPostingSerializer, ApplicationSerializer
+from .forms import ApplicationForm, JobPostingForm, LocationForm
+from .models import Restaurant, Location, JobPosting, Application
 
 # API CRUD views.
+class RestaurantViewSet(viewsets.ModelViewSet):
+    queryset = Restaurant.objects.all()
+    serializer_class = RestaurantSerializer
+
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
@@ -50,17 +54,25 @@ class LocationListView(RestaurantAdminRequiredMixin, ListView):
     context_object_name = 'locations'
 class LocationCreateView(RestaurantAdminRequiredMixin, CreateView):
     model = Location
-    fields = ['name','address','city','state']
+    form_class = LocationForm
     template_name = 'location/location_create.html'
     success_url = reverse_lazy('location_list')
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['restaurant'] = self.request.user.restaurant
+        return kwargs
 class LocationDetailView(RestaurantAdminRequiredMixin, DetailView):
     model = Location
     template_name = 'location/location_detail.html'
 class LocationUpdateView(RestaurantAdminRequiredMixin, UpdateView):
     model = Location
-    fields = ['name','address','city','state']
+    form_class = LocationForm
     template_name = 'location/location_update.html'
     success_url = reverse_lazy('location_list')
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['restaurant'] = self.request.user.restaurant
+        return kwargs
 class LocationDeleteView(RestaurantAdminRequiredMixin, DeleteView):
     model = Location
     template_name = 'location/location_delete.html'
@@ -78,7 +90,7 @@ class JobPostingCreateView(RestaurantAdminRequiredMixin, CreateView):
     success_url = reverse_lazy('jobposting_list')
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['location'] = self.request.user.location
+        kwargs['restaurant'] = self.request.user.restaurant
         return kwargs
 class JobPostingDetailView(AuthenticationRequiredMixin, DetailView):
     model = JobPosting

@@ -21,11 +21,12 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
-from staffing_app.views import LocationViewSet, JobPostingViewSet, ApplicationViewSet
+from staffing_app.views import RestaurantViewSet, LocationViewSet, JobPostingViewSet, ApplicationViewSet
 from users.views import ApplicantViewSet, HiringManagerViewSet, RestaurantAdministratorViewSet, CustomUserViewSet
 
 # Define router for API endpoints
 router = routers.DefaultRouter()
+router.register(r'restaurants', RestaurantViewSet)
 router.register(r'locations', LocationViewSet)
 router.register(r'job_postings', JobPostingViewSet)
 router.register(r'applications', ApplicationViewSet)

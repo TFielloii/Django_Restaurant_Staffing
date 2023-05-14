@@ -5,11 +5,11 @@
 
   <div class="row display-flex justify-content-start">
     {% for job_posting in job_postings %}
-      {% if user.is_hiring_manager or user.is_restaurant_administrator %}
-        {% if user.location == job_posting.location %}
-          <li style="margin-right: 5%;margin-bottom: 1%;"><a href="{% url 'jobposting_detail' job_posting.pk %}">{{ job_posting.title }}</a></li>
-        {% endif %}
-      {% else %}
+      {% if user.is_hiring_manager and user.location == job_posting.location %}
+        <li style="margin-right: 5%;margin-bottom: 1%;"><a href="{% url 'jobposting_detail' job_posting.pk %}">{{ job_posting.title }}</a></li>
+      {% elif user.is_restaurant_administrator and user.restaurant == job_posting.location.restaurant %}
+        <li style="margin-right: 5%;margin-bottom: 1%;"><a href="{% url 'jobposting_detail' job_posting.pk %}">{{ job_posting.title }}</a></li>
+      {% elif not user.is_hiring_manager and not user.is_restaurant_administrator %}
         <li style="margin-right: 5%;margin-bottom: 1%;"><a href="{% url 'jobposting_detail' job_posting.pk %}">{{ job_posting.title }}</a></li>
       {% endif %}
     {% empty %}
@@ -17,5 +17,7 @@
     {% endfor %}
   </div>
 
-  <a class="w3-container w3-padding-large" href="{% url 'jobposting_create' %}">Create a new job posting</a>
+  {% if user.is_restaurant_administrator and user.restaurant == job_posting.location.restaurant %}
+    <a class="w3-container w3-padding-large" href="{% url 'jobposting_create' %}">Create a new job posting</a>
+  {% endif %}
 {% endblock %}

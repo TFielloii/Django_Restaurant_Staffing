@@ -2,12 +2,12 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from staffing_app.models import Location
+from staffing_app.models import Location, Restaurant
 
 # Creates a custom user manager class for user creation.
 class CustomUserManager(BaseUserManager):
     # Creates and saves a user with the given info.
-    def create_user(self, email, first_name='', last_name='', is_hiring_manager=False, is_restaurant_administrator=False, password=None, location=None, **extra_fields):
+    def create_user(self, email, first_name='', last_name='', is_hiring_manager=False, is_restaurant_administrator=False, password=None, restaurant=None, location=None, **extra_fields):
         if not email:
             raise ValueError('Email is required')
         email = self.normalize_email(email)
@@ -16,10 +16,10 @@ class CustomUserManager(BaseUserManager):
         user.save()
         # Creates the appropriate user based on the selected booleans.
         if is_hiring_manager:
-            hiring_manager = HiringManager.objects.create(user=user, location=location)
+            hiring_manager = HiringManager.objects.create(user=user, restaurant=None, location=location)
             hiring_manager.save()
         elif is_restaurant_administrator:
-            restaurant_administrator = RestaurantAdministrator.objects.create(user=user, location=location)
+            restaurant_administrator = RestaurantAdministrator.objects.create(user=user, restaurant=restaurant, location=None)
             restaurant_administrator.save()
         return user
 
@@ -41,6 +41,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=30, blank=True)
     is_hiring_manager = models.BooleanField(default=False)
     is_restaurant_administrator = models.BooleanField(default=False)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
@@ -53,7 +54,7 @@ class Applicant(models.Model):
 
 class RestaurantAdministrator(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
 class HiringManager(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

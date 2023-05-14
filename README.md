@@ -19,26 +19,35 @@ Once the virtual environment is established, you can skip to creating the differ
 bash bin/initialize_db.sh
 ```
 
-Sample locations:
+Sample restaurants:
 | Locations  |         Name        |
 |------------|---------------------|
-| Location 1 | Strickland Propane  |
-| Location 2 | Reynholm Industries |
+| Restaurant 1 | Strickland Propane  |
+| Restaurant 2 | Reynholm Industries |
+
+Sample locations:
+| Locations  |    Address    |      City    |     State     |     Restaurant     |
+|------------|---------------|--------------|---------------|--------------------|
+| Location 1 | 123 Rainy St  | Arlen | TX | Strickland Propane  |
+| Location 2 | 123 Carenden Rd | Central London | London | Reynholm Industries |
+| Location 3 | Broom Rd | Teddington | London | Reynholm Industries |
 
 Sample users:
-| User Type  | Locations  |    Email    |  Password  |
+| User Type  | Location/Restaurant  |    Email    |  Password  |
 |------------|------------|-------------|------------|
 |Base User| NA |test@test.test|password1|
 |Hiring Manager| Location 1 | man@man.man |password1|
 |Hiring Manager| Location 2 | man2@man.man |password1|
-|Rest Admin| Location 1 | admin@admin.admin |password1|
-|Rest Admin| Location 2 | admin2@admin.admin |password1|
+|Hiring Manager| Location 3 | man3@man.man |password1|
+|Rest Admin| Restaurant 1 | admin@admin.admin |password1|
+|Rest Admin| Restaurant 2 | admin2@admin.admin |password1|
 
 Sample job postings:
 | Job Title  |      Locations |
 |------------|----------------|
 |Jr Grill Associate| Location 1 |
 |IT Goblin| Location 2  |
+|CEO| Location 3  |
 
 If you want to create more restaurant administrators or hiring managers you must create a superuser with the following command:
 ```console

@@ -1,15 +1,21 @@
 from datetime import datetime
 from django.db import models
 
-# Model for Locations
-class Location(models.Model):
+# Model for Restaurants
+class Restaurant(models.Model):
     name = models.CharField(max_length=50)
-    address = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
-    state = models.CharField(max_length=2)
-
     def __str__(self):
         return self.name
+    
+# Model for Locations
+class Location(models.Model):
+    address = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=20)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='locations')
+
+    def __str__(self):
+        return f'{self.restaurant}: {self.address}, {self.city} {self.state}'
 
 # Model for Job Postings
 class JobPosting(models.Model):
