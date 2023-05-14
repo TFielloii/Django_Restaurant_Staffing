@@ -14,13 +14,13 @@ bash bin/setup_env.sh
 ``` 
 
 ### Create initialized environment
-Once the virtual environment is established, you can skip to creating the different locations, users, jobs, and superusers yourself, or, in the same bin folder as the previous step, there is an initialize_db.sh file which is setup to create the samples listed below. To ensure that there are no conflicting database issues, when this code is executed, it will also automatically remove the current db.sqlite3 file as well as any migrations currently found in the two apps. To run the file, execute the following command:
+Once the virtual environment is established, you can skip to creating the different restaurants, locations, users, jobs, and superusers yourself, or, in the same bin folder as the previous step, there is an initialize_db.sh file which is setup to create the samples listed below. To ensure that there are no conflicting database issues, when this code is executed, it will also automatically remove the current db.sqlite3 file as well as any migrations currently found in the two apps. To run the file, execute the following command:
 ```console
 bash bin/initialize_db.sh
 ```
 
 Sample restaurants:
-| Locations  |         Name        |
+| Restaurants  |         Name        |
 |------------|---------------------|
 | Restaurant 1 | Strickland Propane  |
 | Restaurant 2 | Reynholm Industries |
@@ -28,9 +28,9 @@ Sample restaurants:
 Sample locations:
 | Locations  |    Address    |      City    |     State     |     Restaurant     |
 |------------|---------------|--------------|---------------|--------------------|
-| Location 1 | 123 Rainy St  | Arlen | TX | Strickland Propane  |
-| Location 2 | 123 Carenden Rd | Central London | London | Reynholm Industries |
-| Location 3 | Broom Rd | Teddington | London | Reynholm Industries |
+| Location 1 | 123 Rainy St  | Arlen | TX | Restaurant 1  |
+| Location 2 | 123 Carenden Rd | Central London | London | Restaurant 2 |
+| Location 3 | Broom Rd | Teddington | London | Restaurant 2 |
 
 Sample users:
 | User Type  | Location/Restaurant  |    Email    |  Password  |
